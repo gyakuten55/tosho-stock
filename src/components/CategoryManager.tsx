@@ -40,6 +40,12 @@ export default function CategoryManager({ categories, onCategoryChanged }: Categ
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    if (!supabase) {
+      setError('システム設定が完了していません。しばらくお待ちください。')
+      return
+    }
+    
     setLoading(true)
     setError('')
 
@@ -94,6 +100,8 @@ export default function CategoryManager({ categories, onCategoryChanged }: Categ
   }
 
   const handleDelete = async (category: Category) => {
+    if (!supabase) return
+    
     if (!confirm(`カテゴリ「${category.name}」を削除してもよろしいですか？\n※このカテゴリに属するファイルがある場合、削除できません。`)) {
       return
     }
