@@ -50,6 +50,8 @@ export default function FileList({ files, categories, isAdmin, onFileDeleted }: 
   }
 
   const handleDownload = async (file: FileItem) => {
+    if (!supabase) return
+    
     try {
       const { data, error } = await supabase.storage
         .from('files')
@@ -75,6 +77,8 @@ export default function FileList({ files, categories, isAdmin, onFileDeleted }: 
   }
 
   const handleDelete = async (file: FileItem) => {
+    if (!supabase) return
+    
     if (!confirm(`「${file.name}」を削除してもよろしいですか？`)) {
       return
     }
