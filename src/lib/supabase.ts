@@ -1,9 +1,19 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'your_supabase_url'
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'your_supabase_anon_key'
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+// 環境変数が設定されているかチェック
+if (!supabaseUrl || !supabaseAnonKey || supabaseUrl.includes('your_supabase') || supabaseAnonKey.includes('your_supabase')) {
+  console.warn('Supabase環境変数が正しく設定されていません。Vercelで環境変数を設定してください。')
+}
+
+// 安全なSupabaseクライアントの作成
+export const supabase = supabaseUrl && supabaseAnonKey && 
+  !supabaseUrl.includes('your_supabase') && 
+  !supabaseAnonKey.includes('your_supabase')
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null
 
 export type Database = {
   public: {

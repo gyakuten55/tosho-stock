@@ -20,6 +20,17 @@ export default function FileUploadForm({ categories, onFileUploaded }: FileUploa
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
+  // Supabaseクライアントが設定されていない場合の表示
+  if (!supabase) {
+    return (
+      <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
+        <p className="text-gray-600 text-center">
+          ファイルアップロード機能を使用するには、Supabase設定が必要です。
+        </p>
+      </div>
+    )
+  }
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData({
       ...formData,

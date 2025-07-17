@@ -15,6 +15,17 @@ interface FileListProps {
 export default function FileList({ files, categories, isAdmin, onFileDeleted }: FileListProps) {
   const [deleting, setDeleting] = useState<string | null>(null)
 
+  // Supabaseクライアントが設定されていない場合の表示
+  if (!supabase) {
+    return (
+      <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
+        <p className="text-gray-600 text-center">
+          ファイル機能を使用するには、Supabase設定が必要です。
+        </p>
+      </div>
+    )
+  }
+
   const formatFileSize = (bytes: number): string => {
     if (bytes === 0) return '0 Bytes'
     const k = 1024

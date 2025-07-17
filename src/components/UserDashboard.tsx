@@ -14,6 +14,22 @@ export default function UserDashboard() {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('')
 
+  // Supabaseクライアントが設定されていない場合の表示
+  if (!supabase) {
+    return (
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+          <h2 className="text-lg font-semibold text-yellow-800 mb-2">
+            🔧 システム設定中
+          </h2>
+          <p className="text-yellow-700">
+            現在システムの設定を行っています。しばらくお待ちください。
+          </p>
+        </div>
+      </div>
+    )
+  }
+
   useEffect(() => {
     loadData()
   }, [])
