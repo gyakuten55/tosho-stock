@@ -50,6 +50,8 @@ export default function UserDashboard() {
   }
 
   const loadFiles = async () => {
+    if (!supabase) return
+    
     const { data, error } = await supabase
       .from('files')
       .select('*')
@@ -63,6 +65,8 @@ export default function UserDashboard() {
   }
 
   const loadCategories = async () => {
+    if (!supabase) return
+    
     const { data, error } = await supabase
       .from('categories')
       .select('*')

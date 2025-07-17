@@ -53,6 +53,8 @@ export default function AdminDashboard() {
   }
 
   const loadFiles = async () => {
+    if (!supabase) return
+    
     const { data, error } = await supabase
       .from('files')
       .select('*')
@@ -66,6 +68,8 @@ export default function AdminDashboard() {
   }
 
   const loadCategories = async () => {
+    if (!supabase) return
+    
     const { data, error } = await supabase
       .from('categories')
       .select('*')

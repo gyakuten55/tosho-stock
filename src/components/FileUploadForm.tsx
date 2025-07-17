@@ -65,6 +65,11 @@ export default function FileUploadForm({ categories, onFileUploaded }: FileUploa
       return
     }
 
+    if (!supabase) {
+      setError('システム設定が完了していません。しばらくお待ちください。')
+      return
+    }
+
     setLoading(true)
     setError('')
 
