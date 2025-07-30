@@ -66,3 +66,4 @@ node_modules/
 
 # Serverless directories
 .serverless 
+.vercel
