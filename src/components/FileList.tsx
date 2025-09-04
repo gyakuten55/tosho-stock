@@ -1,19 +1,52 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import { FileItem, Category } from '@/types'
-import { Download, Trash2, FileText, Calendar, User, Folder } from 'lucide-react'
+import { Download, Trash2, FileText, Calendar, User, Folder, RefreshCw } from 'lucide-react'
 
 interface FileListProps {
   files: FileItem[]
   categories: Category[]
   isAdmin: boolean
   onFileDeleted?: () => void
+  onFilesUpdated?: () => void
 }
 
-export default function FileList({ files, categories, isAdmin, onFileDeleted }: FileListProps) {
+export default function FileList({ files, categories, isAdmin, onFileDeleted, onFilesUpdated }: FileListProps) {
   const [deleting, setDeleting] = useState<string | null>(null)
+  const [isRealtimeConnected, setIsRealtimeConnected] = useState(false)
+
+  // Supabaseリアルタイムサブスクリプションの設定
+  useEffect(() => {
+    if (!supabase) return
+
+    console.log('Setting up realtime subscription for files...')
+    
+    const channel = supabase
+      .channel('files-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'files'
+        },
+        (payload) => {
+          console.log('Files table change detected:', payload)
+          onFilesUpdated?.()
+        }
+      )
+      .subscribe((status) => {
+        console.log('Files subscription status:', status)
+        setIsRealtimeConnected(status === 'SUBSCRIBED')
+      })
+
+    return () => {
+      console.log('Cleaning up files realtime subscription')
+      supabase?.removeChannel(channel)
+    }
+  }, [onFilesUpdated])
 
   // Supabaseクライアントが設定されていない場合の表示
   if (!supabase) {
@@ -120,6 +153,17 @@ export default function FileList({ files, categories, isAdmin, onFileDeleted }: 
 
   return (
     <div className="space-y-4">
+      {/* リアルタイム接続ステータス */}
+      <div className="flex items-center justify-between text-sm text-gray-500 bg-gray-50 px-4 py-2 rounded-lg">
+        <div className="flex items-center">
+          <RefreshCw size={16} className={`mr-2 ${isRealtimeConnected ? 'text-green-500' : 'text-gray-400'}`} />
+          リアルタイム更新: {isRealtimeConnected ? '接続済み' : '未接続'}
+        </div>
+        <div>
+          {files.length} 件のファイル
+        </div>
+      </div>
+
       {files.map((file) => (
         <div key={file.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
           <div className="flex items-center justify-between">

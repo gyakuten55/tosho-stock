@@ -1,9 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import { Category } from '@/types'
-import { Plus, Trash2, Edit2, Folder } from 'lucide-react'
+import { Plus, Trash2, Edit2, Folder, RefreshCw } from 'lucide-react'
 
 interface CategoryManagerProps {
   categories: Category[]
@@ -19,6 +19,41 @@ export default function CategoryManager({ categories, onCategoryChanged }: Categ
   const [loading, setLoading] = useState(false)
   const [deleting, setDeleting] = useState<string | null>(null)
   const [error, setError] = useState('')
+  const [isRealtimeConnected, setIsRealtimeConnected] = useState(false)
+
+  // Supabaseリアルタイムサブスクリプションの設定
+  useEffect(() => {
+    if (!supabase) return
+
+    console.log('Setting up realtime subscription for categories...')
+    
+    const channel = supabase
+      .channel('categories-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'categories'
+        },
+        (payload) => {
+          console.log('Categories table change detected:', payload)
+          onCategoryChanged()
+        }
+      )
+      .subscribe((status) => {
+        console.log('Categories subscription status:', status)
+        setIsRealtimeConnected(status === 'SUBSCRIBED')
+        if (status === 'CHANNEL_ERROR') {
+          console.warn('カテゴリのリアルタイム機能でエラーが発生しました。手動で更新してください。')
+        }
+      })
+
+    return () => {
+      console.log('Cleaning up categories realtime subscription')
+      supabase?.removeChannel(channel)
+    }
+  }, [onCategoryChanged])
 
   // Supabaseクライアントが設定されていない場合の表示
   if (!supabase) {
@@ -130,6 +165,10 @@ export default function CategoryManager({ categories, onCategoryChanged }: Categ
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-medium text-gray-900">カテゴリ管理</h3>
+        <div className="flex items-center text-sm text-gray-500">
+          <RefreshCw size={16} className={`mr-2 ${isRealtimeConnected ? 'text-green-500' : 'text-gray-400'}`} />
+          リアルタイム更新: {isRealtimeConnected ? '接続済み' : '未接続'}
+        </div>
       </div>
 
       {/* カテゴリ追加・編集フォーム */}

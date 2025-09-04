@@ -3,12 +3,14 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import { FileItem, Category } from '@/types'
+import { useAuth } from '@/lib/auth-context'
 import FileUploadForm from './FileUploadForm'
 import FileList from './FileList'
 import CategoryManager from './CategoryManager'
 import { Upload, Files, Folder, Plus } from 'lucide-react'
 
 export default function AdminDashboard() {
+  const { user } = useAuth()
   const [activeTab, setActiveTab] = useState<'upload' | 'files' | 'categories'>('upload')
   const [files, setFiles] = useState<FileItem[]>([])
   const [categories, setCategories] = useState<Category[]>([])
@@ -55,30 +57,45 @@ export default function AdminDashboard() {
   const loadFiles = async () => {
     if (!supabase) return
     
-    const { data, error } = await supabase
-      .from('files')
-      .select('*')
-      .order('uploaded_at', { ascending: false })
-    
-    if (error) {
-      console.error('Error loading files:', error)
-    } else {
-      setFiles(data || [])
+    try {
+      const { data, error } = await supabase
+        .from('files')
+        .select('*')
+        .eq('is_deleted', false) // 削除されていないファイルのみ取得
+        .order('uploaded_at', { ascending: false })
+      
+      if (error) {
+        console.error('Error loading files:', error)
+        // エラーが発生した場合は空の配列を設定
+        setFiles([])
+      } else {
+        setFiles(data || [])
+      }
+    } catch (error) {
+      console.error('Failed to load files:', error)
+      setFiles([])
     }
   }
 
   const loadCategories = async () => {
     if (!supabase) return
     
-    const { data, error } = await supabase
-      .from('categories')
-      .select('*')
-      .order('name', { ascending: true })
-    
-    if (error) {
-      console.error('Error loading categories:', error)
-    } else {
-      setCategories(data || [])
+    try {
+      const { data, error } = await supabase
+        .from('categories')
+        .select('*')
+        .order('name', { ascending: true })
+      
+      if (error) {
+        console.error('Error loading categories:', error)
+        // エラーが発生した場合は空の配列を設定
+        setCategories([])
+      } else {
+        setCategories(data || [])
+      }
+    } catch (error) {
+      console.error('Failed to load categories:', error)
+      setCategories([])
     }
   }
 
@@ -104,6 +121,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-6">
+      
       <div className="card">
         <h2 className="text-2xl font-bold text-gray-900 mb-6">管理者ダッシュボード</h2>
         
@@ -158,6 +176,7 @@ export default function AdminDashboard() {
               categories={categories}
               isAdmin={true}
               onFileDeleted={handleFileDeleted}
+              onFilesUpdated={loadFiles}
             />
           )}
           {activeTab === 'categories' && (

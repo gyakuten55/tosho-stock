@@ -1,28 +1,56 @@
-# 東翔運輸株式会社 - 社内資料管理システム
+# 資料ストックシステム - Supabase統合版（MCP対応）
 
 社内の教育資料や業務資料をストックし、従業員が必要に応じてダウンロードできるWebアプリケーションです。
+Model Context Protocol (MCP)サーバーを統合し、Claude Desktopから直接操作可能です。
+
+## 🆕 新機能・改良点
+
+### Supabase完全統合
+- 本格的なSupabase認証システム（レガシーログインとの併用対応）
+- Row Level Security (RLS)によるセキュリティ強化
+- リアルタイム更新機能
+
+### MCP統合
+- Claude Desktop用MCPサーバー
+- ファイル・カテゴリ・ユーザー管理のAPI
+- リアルタイム分析機能
+
+### リアルタイム機能
+- ファイルリストの自動更新
+- カテゴリ変更の即時反映
+- 複数ユーザーでの同期
 
 ## 機能
 
 ### 管理者機能
-- ファイルのアップロード
-- ファイルの管理・削除
+- ファイルのアップロード（ドラッグ＆ドロップ対応）
+- ファイルの管理・削除（ソフト削除）
 - カテゴリの作成・編集・削除
 - アップロードされたファイルの一覧表示
+- リアルタイム統計とファイル分析
 
 ### 一般ユーザー機能
 - ファイルの閲覧・ダウンロード
 - カテゴリ別でのファイル検索
 - ファイル名・説明での検索
+- リアルタイム更新通知
+
+### MCP機能（Claude Desktop連携）
+- ファイルシステムの完全制御
+- 統計データの取得と分析
+- 自動レポート生成
+- バックアップとメンテナンス
 
 ## 技術スタック
 
 - **フロントエンド**: Next.js 14 (App Router)
 - **データベース**: Supabase (PostgreSQL)
 - **ストレージ**: Supabase Storage
+- **認証**: Supabase Auth + レガシー認証システム併用
+- **リアルタイム**: Supabase Realtime
+- **MCP**: Model Context Protocol Server
 - **スタイリング**: TailwindCSS
 - **アイコン**: Lucide React
-- **認証**: カスタム実装（ID/パスワード）
 
 ## セットアップ
 
@@ -32,36 +60,60 @@
 npm install
 ```
 
-### 2. 環境変数の設定
+### 2. MCPサーバー用依存関係の追加インストール
+
+```bash
+npm install @modelcontextprotocol/sdk@latest @supabase/supabase-js zod dotenv
+```
+
+### 3. 環境変数の設定
 
 `.env.local`ファイルを作成し、以下の環境変数を設定してください：
 
 ```env
-# Supabase
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=https://vqknmngemupivytxznzd.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZxa21ubmdlbXVwaXZ5dHh6bnpkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI3NTIwMTksImV4cCI6MjA2ODMyODAxOX0.J-33xhk-dGsQBt9WgYcxVcC_guLemUknfW1USESUoRE
+SUPABASE_SERVICE_ROLE_KEY=YOUR_SERVICE_ROLE_KEY_HERE
 
-# 認証設定
+# Legacy Authentication (backward compatibility)
 ADMIN_ID=admin
 ADMIN_PASSWORD=password123
-USER_ID=user  
+USER_ID=user
 USER_PASSWORD=password123
 ```
 
-### 3. Supabaseの設定
+**重要**: `YOUR_SERVICE_ROLE_KEY_HERE` をSupabaseダッシュボード → Settings → API → service_role キーで取得した実際の値に置換してください。
 
-1. [Supabase](https://supabase.com)でプロジェクトを作成
-2. データベースURL、匿名キーを取得
-3. `supabase_setup.sql`のSQLを実行してテーブルを作成
-4. Storageで`files`バケットを作成
+### 4. Supabaseの設定
 
-### 4. 開発サーバーの起動
+✅ **完了済み**: 以下の設定は自動実行されました
+1. Supabaseプロジェクト: `tosho-siryo-stock` (vqknmngemupivytxznzd)
+2. データベーステーブル作成:
+   - `profiles` テーブル（Supabase Auth統合）
+   - `files` テーブル（UUID型、削除フラグ対応）
+   - `categories` テーブル
+3. Row Level Security (RLS)ポリシー設定
+4. ストレージバケット `files` 作成
+5. 認証システム（レガシーとSupabase Auth併用）
+
+### 5. MCPサーバーの設定
+
+詳細な手順は `MCP_SETUP.md` を参照してください。
+
+### 6. 開発サーバーの起動
 
 ```bash
 npm run dev
 ```
 
 ブラウザで [http://localhost:3000](http://localhost:3000) を開いてアプリケーションにアクセスできます。
+
+### 7. MCPサーバーの起動（別ターミナル）
+
+```bash
+node mcp-server.mjs
+```
 
 ## デフォルトアカウント
 

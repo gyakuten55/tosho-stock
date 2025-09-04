@@ -6,28 +6,35 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "mcp": "node mcp-server.mjs",
+    "test-mcp": "node test-mcp-connection.js",
+    "verify-setup": "node verify-setup.js"
   },
   "dependencies": {
-    "next": "14.0.0",
-    "react": "^18",
-    "react-dom": "^18",
-    "@supabase/supabase-js": "^2.38.0",
+    "@modelcontextprotocol/sdk": "^1.17.4",
     "@supabase/auth-helpers-nextjs": "^0.8.7",
     "@supabase/auth-helpers-react": "^0.4.2",
+    "@supabase/supabase-js": "^2.56.1",
+    "dotenv": "^17.2.1",
+    "js-cookie": "^3.0.5",
     "lucide-react": "^0.292.0",
-    "js-cookie": "^3.0.5"
+    "next": "14.0.0",
+    "node-fetch": "^3.3.2",
+    "react": "^18",
+    "react-dom": "^18",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@types/js-cookie": "^3.0.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "@types/js-cookie": "^3.0.6",
+    "autoprefixer": "^10.0.1",
     "eslint": "^8",
     "eslint-config-next": "14.0.0",
+    "postcss": "^8",
     "tailwindcss": "^3.3.0",
-    "autoprefixer": "^10.0.1",
-    "postcss": "^8"
+    "typescript": "^5"
   }
-} 
+}

@@ -1,0 +1,32 @@
+{
+  "name": "document-stock-mcp-server",
+  "version": "1.0.0",
+  "description": "MCP Server for Document Stock Management System with Supabase integration",
+  "main": "mcp-server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node mcp-server.js",
+    "dev": "node --watch mcp-server.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.4.0",
+    "@supabase/supabase-js": "^2.39.0",
+    "zod": "^3.22.0",
+    "dotenv": "^16.3.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "bin": {
+    "document-stock-mcp": "./mcp-server.js"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "supabase",
+    "document-management",
+    "claude"
+  ],
+  "author": "Document Stock Management System",
+  "license": "MIT"
+}

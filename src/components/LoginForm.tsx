@@ -1,38 +1,30 @@
 'use client'
 
 import { useState } from 'react'
-import { login } from '@/lib/auth'
-import { User, LogIn } from 'lucide-react'
+import { useAuth } from '@/lib/auth-context'
+import { Mail, LogIn } from 'lucide-react'
 
-interface LoginFormProps {
-  onLogin: (user: { id: string; type: 'admin' | 'user' }) => void
-}
-
-export default function LoginForm({ onLogin }: LoginFormProps) {
+export default function LoginForm() {
+  const { signIn, loading } = useAuth()
+  
   const [formData, setFormData] = useState({
-    id: '',
+    email: '',
     password: ''
   })
-  const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true)
     setError('')
 
     try {
-      const user = await login(formData.id, formData.password)
-      if (user) {
-        onLogin(user)
-      } else {
-        setError('IDまたはパスワードが正しくありません')
+      const result = await signIn(formData.email, formData.password)
+      if (result.error) {
+        setError(result.error.message || 'メールアドレスまたはパスワードが正しくありません')
       }
     } catch (error) {
-      console.error('Login error:', error)
+      console.error('Sign in error:', error)
       setError('ログインに失敗しました')
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -46,22 +38,22 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
   return (
     <div className="card">
       <div className="flex items-center justify-center mb-6">
-        <User size={48} className="text-primary-600" />
+        <Mail size={48} className="text-primary-600" />
       </div>
-      
-      <form onSubmit={handleSubmit} className="space-y-4">
+
+      <form onSubmit={handleSignIn} className="space-y-4">
         <div>
-          <label htmlFor="id" className="block text-sm font-medium text-gray-700 mb-1">
-            ユーザーID
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+            メールアドレス
           </label>
           <input
-            type="text"
-            id="id"
-            name="id"
-            value={formData.id}
+            type="email"
+            id="email"
+            name="email"
+            value={formData.email}
             onChange={handleInputChange}
             className="input-field"
-            placeholder="IDを入力してください"
+            placeholder="メールアドレスを入力してください"
             required
           />
         </div>
@@ -104,10 +96,10 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
         </button>
       </form>
 
-      <div className="mt-6 p-4 bg-gray-50 rounded-md text-sm text-gray-600">
-        <p className="font-medium mb-2">テスト用アカウント:</p>
-        <p>管理者: ID: admin, パスワード: password123</p>
-        <p>ユーザー: ID: user, パスワード: password123</p>
+      <div className="mt-6 p-4 bg-blue-50 rounded-md text-sm text-blue-700">
+        <p className="font-medium mb-2">💼 アカウント情報:</p>
+        <p className="mb-1"><strong>管理者:</strong> admin@example.com / admin123</p>
+        <p><strong>一般ユーザー:</strong> test@example.com / test123</p>
       </div>
     </div>
   )

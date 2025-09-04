@@ -1,32 +1,16 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import LoginForm from '@/components/LoginForm'
 import AdminDashboard from '@/components/AdminDashboard'
 import UserDashboard from '@/components/UserDashboard'
-import { getCurrentUser, logout } from '@/lib/auth'
+import { useAuth } from '@/lib/auth-context'
 import { LogOut } from 'lucide-react'
 
 export default function Home() {
-  const [user, setUser] = useState<{ id: string; type: 'admin' | 'user' } | null>(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      const currentUser = await getCurrentUser()
-      setUser(currentUser)
-      setLoading(false)
-    }
-    checkAuth()
-  }, [])
-
-  const handleLogin = (userData: { id: string; type: 'admin' | 'user' }) => {
-    setUser(userData)
-  }
+  const { user, loading, signOut, isAdmin } = useAuth()
 
   const handleLogout = async () => {
-    await logout()
-    setUser(null)
+    await signOut()
   }
 
   if (loading) {
@@ -47,7 +31,7 @@ export default function Home() {
             </h1>
             <p className="text-gray-600">社内資料管理システム</p>
           </div>
-          <LoginForm onLogin={handleLogin} />
+          <LoginForm />
         </div>
       </div>
     )
@@ -63,7 +47,7 @@ export default function Home() {
                 東翔運輸株式会社 - 社内資料管理システム
               </h1>
               <p className="text-sm text-gray-600">
-                {user.type === 'admin' ? '管理者' : 'ユーザー'}としてログイン中
+                {isAdmin ? '管理者' : 'ユーザー'}としてログイン中 ({user?.profile?.username || user?.email})
               </p>
             </div>
             <button
@@ -78,7 +62,7 @@ export default function Home() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {user.type === 'admin' ? (
+        {isAdmin ? (
           <AdminDashboard />
         ) : (
           <UserDashboard />

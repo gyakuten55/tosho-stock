@@ -157,6 +157,7 @@ export default function UserDashboard() {
           files={filteredFiles} 
           categories={categories}
           isAdmin={false}
+          onFilesUpdated={loadFiles}
         />
       </div>
     </div>

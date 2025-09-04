@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "document-stock": {
+      "command": "node",
+      "args": ["mcp-server.mjs"],
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
+  }
+}

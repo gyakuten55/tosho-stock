@@ -18,6 +18,35 @@ export const supabase = supabaseUrl && supabaseAnonKey &&
 export type Database = {
   public: {
     Tables: {
+      profiles: {
+        Row: {
+          id: string
+          username: string
+          user_type: 'admin' | 'user'
+          full_name: string | null
+          avatar_url: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id: string
+          username: string
+          user_type?: 'admin' | 'user'
+          full_name?: string | null
+          avatar_url?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          username?: string
+          user_type?: 'admin' | 'user'
+          full_name?: string | null
+          avatar_url?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
       files: {
         Row: {
           id: string
@@ -28,7 +57,11 @@ export type Database = {
           description: string | null
           file_path: string
           uploaded_at: string
-          uploaded_by: string
+          uploaded_by: string | null // UUID型
+          uploaded_by_old: string | null // 古いstring型
+          mime_type: string | null
+          is_deleted: boolean
+          deleted_at: string | null
         }
         Insert: {
           id?: string
@@ -39,7 +72,11 @@ export type Database = {
           description?: string | null
           file_path: string
           uploaded_at?: string
-          uploaded_by: string
+          uploaded_by?: string | null
+          uploaded_by_old?: string | null
+          mime_type?: string | null
+          is_deleted?: boolean
+          deleted_at?: string | null
         }
         Update: {
           id?: string
@@ -50,7 +87,11 @@ export type Database = {
           description?: string | null
           file_path?: string
           uploaded_at?: string
-          uploaded_by?: string
+          uploaded_by?: string | null
+          uploaded_by_old?: string | null
+          mime_type?: string | null
+          is_deleted?: boolean
+          deleted_at?: string | null
         }
       }
       categories: {
@@ -59,18 +100,21 @@ export type Database = {
           name: string
           description: string | null
           created_at: string
+          created_by: string | null
         }
         Insert: {
           id?: string
           name: string
           description?: string | null
           created_at?: string
+          created_by?: string | null
         }
         Update: {
           id?: string
           name?: string
           description?: string | null
           created_at?: string
+          created_by?: string | null
         }
       }
     }

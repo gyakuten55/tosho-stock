@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { Category } from '@/types'
+import { useAuth } from '@/lib/auth-context'
 import { Upload, X, Plus } from 'lucide-react'
 
 interface FileUploadFormProps {
@@ -11,6 +12,7 @@ interface FileUploadFormProps {
 }
 
 export default function FileUploadForm({ categories, onFileUploaded }: FileUploadFormProps) {
+  const { user } = useAuth()
   const [formData, setFormData] = useState({
     name: '',
     category: '',
@@ -96,7 +98,9 @@ export default function FileUploadForm({ categories, onFileUploaded }: FileUploa
           category: formData.category,
           description: formData.description || null,
           file_path: uploadData.path,
-          uploaded_by: 'admin' // 実際のユーザーIDを使用
+          mime_type: selectedFile.type || null,
+          uploaded_by: user?.id || null, // Supabase Auth用フィールド
+          is_deleted: false
         })
 
       if (dbError) {

@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "document-stock": {
+      "command": "node",
+      "args": ["mcp-server.mjs"],
+      "cwd": "/Volumes/GYAKUTEN/PASSフォルダ/04_Projects/2025/tosho_siryo_stock_project",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
+  }
+}
