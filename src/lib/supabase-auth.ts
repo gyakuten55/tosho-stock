@@ -49,7 +49,10 @@ export async function signUp(email: string, password: string, userData: {
 
 // Sign in with email and password
 export async function signIn(email: string, password: string): Promise<{ user: AuthUser | null; error: Error | null }> {
+  console.log('SignIn attempt - Supabase client exists:', !!supabase)
+  
   if (!supabase) {
+    console.error('Supabase client not initialized - check environment variables')
     return { user: null, error: new Error('Supabase client not initialized') }
   }
 
@@ -57,6 +60,8 @@ export async function signIn(email: string, password: string): Promise<{ user: A
     // Sanitize input to ensure no non-ASCII characters cause header issues
     const sanitizedEmail = email.trim()
     const sanitizedPassword = password.trim()
+
+    console.log('Attempting to sign in with email:', sanitizedEmail)
 
     // Validate inputs
     if (!sanitizedEmail || !sanitizedPassword) {
@@ -68,12 +73,19 @@ export async function signIn(email: string, password: string): Promise<{ user: A
       password: sanitizedPassword
     })
 
+    console.log('Supabase auth response:', { 
+      success: !!data?.user, 
+      error: error?.message,
+      userId: data?.user?.id
+    })
+
     if (error) throw error
 
     // Get user profile
     const profile = await getUserProfile(data.user.id)
     const userWithProfile = { ...data.user, profile } as AuthUser
 
+    console.log('User profile loaded:', !!profile)
     return { user: userWithProfile, error: null }
   } catch (error) {
     console.error('Sign in error:', error)
