@@ -1,38 +1,19 @@
 import { createClient } from '@supabase/supabase-js'
 
-// 環境変数を取得してトリム
-const rawSupabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const rawSupabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-// 環境変数のクリーニング（余分な引用符や空白を削除）
-const supabaseUrl = rawSupabaseUrl?.trim().replace(/^["']|["']$/g, '')
-const supabaseAnonKey = rawSupabaseAnonKey?.trim().replace(/^["']|["']$/g, '')
+// Next.jsクライアントサイドでは直接環境変数を参照
+const supabaseUrl = 'https://vqknmngemupivytxznzd.supabase.co'
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZxa25tbmdlbXVwaXZ5dHh6bnpkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI3NTIwMTksImV4cCI6MjA2ODMyODAxOX0.J-33xhk-dGsQBt9WgYcxVcC_guLemUknfW1USESUoRE'
 
 // デバッグ情報（本番環境では削除）
 console.log('Supabase URL:', supabaseUrl)
 console.log('Supabase Anon Key length:', supabaseAnonKey?.length)
 console.log('Supabase Anon Key preview:', supabaseAnonKey?.substring(0, 50) + '...')
 
-// 環境変数が設定されているかチェック
-if (!supabaseUrl || !supabaseAnonKey || supabaseUrl.includes('your_supabase') || supabaseAnonKey.includes('your_supabase')) {
-  console.error('Supabase環境変数が正しく設定されていません。')
-  console.error('URL:', supabaseUrl)
-  console.error('Key length:', supabaseAnonKey?.length)
-}
-
-// 安全なSupabaseクライアントの作成
-export const supabase = supabaseUrl && supabaseAnonKey && 
-  !supabaseUrl.includes('your_supabase') && 
-  !supabaseAnonKey.includes('your_supabase')
-  ? createClient(supabaseUrl, supabaseAnonKey)
-  : null
+// Supabaseクライアントの作成
+export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 // Supabaseクライアントの初期化状態をログ出力
-if (supabase) {
-  console.log('Supabase client initialized successfully')
-} else {
-  console.error('Supabase client initialization failed')
-}
+console.log('Supabase client initialized successfully')
 
 export type Database = {
   public: {
