@@ -100,6 +100,7 @@ export default function FileUploadForm({ categories, onFileUploaded }: FileUploa
           file_path: uploadData.path,
           mime_type: selectedFile.type || null,
           uploaded_by: user?.id || null, // Supabase Auth用フィールド
+          uploaded_by_old: user?.profile?.username || 'unknown', // 古いstring型フィールド
           is_deleted: false
         })
 
