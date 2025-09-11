@@ -54,9 +54,18 @@ export async function signIn(email: string, password: string): Promise<{ user: A
   }
 
   try {
+    // Sanitize input to ensure no non-ASCII characters cause header issues
+    const sanitizedEmail = email.trim()
+    const sanitizedPassword = password.trim()
+
+    // Validate inputs
+    if (!sanitizedEmail || !sanitizedPassword) {
+      throw new Error('Email and password are required')
+    }
+
     const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password
+      email: sanitizedEmail,
+      password: sanitizedPassword
     })
 
     if (error) throw error

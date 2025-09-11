@@ -91,6 +91,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setUser(result.user)
       }
       return result
+    } catch (error) {
+      console.error('Auth context sign in error:', error)
+      return { 
+        user: null, 
+        error: error instanceof Error ? error : new Error('Authentication failed') 
+      }
     } finally {
       setLoading(false)
     }
