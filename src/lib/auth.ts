@@ -9,11 +9,11 @@ interface User {
 const AUTH_CONFIG = {
   admin: {
     id: process.env.ADMIN_ID || 'admin',
-    password: process.env.ADMIN_PASSWORD || 'password123'
+    password: process.env.ADMIN_PASSWORD || 'admin123'
   },
   user: {
-    id: process.env.USER_ID || 'user', 
-    password: process.env.USER_PASSWORD || 'password123'
+    id: process.env.USER_ID || 'user',
+    password: process.env.USER_PASSWORD || 'user123'
   }
 }
 

@@ -78,9 +78,9 @@ SUPABASE_SERVICE_ROLE_KEY=YOUR_SERVICE_ROLE_KEY_HERE
 
 # Legacy Authentication (backward compatibility)
 ADMIN_ID=admin
-ADMIN_PASSWORD=password123
+ADMIN_PASSWORD=admin123
 USER_ID=user
-USER_PASSWORD=password123
+USER_PASSWORD=user123
 ```
 
 **重要**: `YOUR_SERVICE_ROLE_KEY_HERE` をSupabaseダッシュボード → Settings → API → service_role キーで取得した実際の値に置換してください。
@@ -119,11 +119,11 @@ node mcp-server.mjs
 
 ### 管理者アカウント
 - **ID**: admin
-- **パスワード**: password123
+- **パスワード**: admin123
 
-### 一般ユーザーアカウント  
+### 一般ユーザーアカウント
 - **ID**: user
-- **パスワード**: password123
+- **パスワード**: user123
 
 ## ディレクトリ構造
 
