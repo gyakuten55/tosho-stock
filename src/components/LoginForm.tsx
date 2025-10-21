@@ -44,16 +44,16 @@ export default function LoginForm() {
       <form onSubmit={handleSignIn} className="space-y-4">
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-            メールアドレス
+            ユーザーID
           </label>
           <input
-            type="email"
+            type="text"
             id="email"
             name="email"
             value={formData.email}
             onChange={handleInputChange}
             className="input-field"
-            placeholder="メールアドレスを入力してください"
+            placeholder="ユーザーIDを入力してください"
             required
           />
         </div>
@@ -98,8 +98,8 @@ export default function LoginForm() {
 
       <div className="mt-6 p-4 bg-blue-50 rounded-md text-sm text-blue-700">
         <p className="font-medium mb-2">💼 アカウント情報:</p>
-        <p className="mb-1"><strong>管理者:</strong> admin@example.com / admin123</p>
-        <p><strong>一般ユーザー:</strong> test@example.com / test123</p>
+        <p className="mb-1"><strong>管理者:</strong> admin / admin123</p>
+        <p><strong>一般ユーザー:</strong> user / user123</p>
       </div>
     </div>
   )
